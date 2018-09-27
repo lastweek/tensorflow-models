@@ -27,6 +27,16 @@ import tensorflow as tf
 import resnet_model
 import vgg_preprocessing
 
+from keras import backend as K
+
+config = tf.ConfigProto(intra_op_parallelism_threads=4, \
+			inter_op_parallelism_threads=4, \
+			allow_soft_placement=True, \
+			device_count = {'CPU': 4})
+
+session = tf.Session(config=config)
+K.set_session(session)
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
@@ -258,7 +268,7 @@ def main(unused_argv):
     }
 
     logging_hook = tf.train.LoggingTensorHook(
-        tensors=tensors_to_log, every_n_iter=100)
+        tensors=tensors_to_log, every_n_iter=1)
 
     print('Starting a training cycle.')
     resnet_classifier.train(
